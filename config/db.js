@@ -1,13 +1,20 @@
 const mongoose = require('mongoose');
+const config = require('config');
+const connectionString = config.get('mongoURI');
 
-const connectionString = 'mongodb+srv://tashi123:tashi123@backend-ym5zo.mongodb.net/test?retryWrites=true&w=majority';
+const connectDB = async () => {
+    try {
+        await mongoose.connect(connectionString,
+            {
+                useNewUrlParser: true,
+                useUnifiedTopology: true,
+                useCreateIndex: true,
+                useFindAndModify: false
+            });
 
-const connectDB = async () =>{
-    try{
-        await mongoose.connect(connectionString, {useNewUrlParser: true});
         console.log('MongoDB connected..');
-        
-    }catch(err){
+
+    } catch (err) {
         console.error(err.message);
         //exit process with failure
         process.exit(1)
