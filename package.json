@@ -5,14 +5,18 @@
   "main": "server.js",
   "scripts": {
     "start": "node server",
-    "server": "nodemon server"
+    "server": "nodemon server",
+    "client": "npm start --prefix ../frontend",
+    "dev": "concurrently \"npm run server\" \"npm run client\" "
   },
   "author": "Tashi",
   "license": "ISC",
   "dependencies": {
     "axios": "^0.19.2",
     "bcrypt": "^4.0.0",
+    "concurrently": "^5.2.0",
     "config": "^3.2.5",
+    "cors": "^2.8.5",
     "express": "^4.17.1",
     "express-validator": "^6.4.0",
     "gravatar": "^1.8.0",

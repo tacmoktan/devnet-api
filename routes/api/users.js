@@ -31,7 +31,7 @@ router.post('/',
             let user = await User.findOne({ email });
 
             //check if user exists
-            user && res.status(400).json({ error: [{ msg: "User already exists" }] });
+            user && res.status(400).json({ errors: [{ msg: "User already exists" }] });
 
             //avatar
             let avatar = gravatar.url(email, {
@@ -82,7 +82,7 @@ router.get('/all_users', async (req, res) => {
         const users = await User.find();
 
         if (!users)
-            return res.json({ msg: "no users found" });
+            return res.json({ errors: [{ msg: "no users found" }] });
 
         res.json(users);
     } catch (errors) {

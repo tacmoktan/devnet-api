@@ -20,7 +20,7 @@ router.get('/me', auth, async (req, res) => {
         );
 
         if (!profile) {
-            return res.status(400).json({ msg: 'There is no profile of this user' });
+            return res.status(400).json({ errors: [{ msg: 'There is no profile of this user' }] });
         }
 
         res.json(profile);
@@ -47,7 +47,7 @@ router.post('/',
         const errors = validationResult(req);
 
         if (!errors.isEmpty())
-            return res.status(400).json({ error: errors.array() })
+            return res.status(400).json({ errors: errors.array() })
 
         const { company, website, github, status, skills, facebook, linkedin, youtube } = req.body;
 
@@ -101,7 +101,7 @@ router.get('/all', async (req, res) => {
         let profiles = await Profile.find().populate('user', ['name, avatar']);
 
         if (!profiles)
-            return res.status(400).json({ msg: "No profiles" })
+            return res.status(400).json({ errors: [{ msg: "No profiles" }] })
 
         res.json(profiles);
     } catch (err) {
@@ -119,7 +119,7 @@ router.get('/user/:user_id', async (req, res) => {
         let profile = await Profile.findOne({ user: req.params.user_id }).populate('user', ['name', 'avatar']);
 
         if (!profile)
-            return res.status(400).json({ msg: "No profile found" })
+            return res.status(400).json({ errors: [{ msg: "No profile found" }] })
 
         res.json(profile);
 
@@ -270,7 +270,7 @@ router.get('/github/:username', (req, res) => {
         axios.get(`https://github.com/login/oauth/authorize?client_id=${config.get('githubClientId')}`)
             .then(response => {
                 if (!response)
-                    return res.status(404).json({ msg: "Github profile not found" });
+                    return res.status(404).json({ errors: [{ msg: "Github profile not found" }] });
 
                 console.log(response.config.url);
                 /* console.log({code}); */
@@ -290,7 +290,7 @@ router.get('/user/signin/callback', (req, res) => {
         let accessToken = "";
 
         if (!code)
-            return res.status(400).json({ msg: "Code not found" })
+            return res.status(400).json({ errors: [{ msg: "Code not found" }] })
 
         axios({
             method: 'post',
