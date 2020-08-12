@@ -99,10 +99,10 @@ router.post('/',
 
 router.get('/all', async (req, res) => {
     try {
-        let profiles = await Profile.find().populate('user', ['name, avatar']);
+        let profiles = await Profile.find().populate('user', ['name', 'avatar']);
 
         if (!profiles)
-            return res.status(400).json({ errors: [{ msg: "No profiles" }] })
+            return res.status(404).json({ errors: [{ msg: "No profiles" }] })
 
         res.json(profiles);
     } catch (err) {
@@ -293,7 +293,7 @@ router.get('/user/signin/callback', (req, res) => {
         let accessToken = "";
 
         if (!code)
-            return res.status(400).json({ errors: [{ msg: "Code not found" }] })
+            return res.status(404).json({ errors: [{ msg: "Code not found" }] })
 
         axios({
             method: 'post',
