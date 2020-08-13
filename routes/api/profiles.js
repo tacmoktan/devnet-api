@@ -259,24 +259,48 @@ router.delete('/education/:edu_id', auth, async (req, res) => {
     }
 });
 
-/* Oauth  process*/
+
 
 //@route        GET api/profile/github/:username
 //@desc         get github repo by username  
 //@access       public
 
-router.get('/github/:username', (req, res) => {
+router.get('/github/:username', auth,(req, res) => {
+    try {
+        axios.request({
+            baseURL: `https://api.github.com/users/${req.params.username}/repos?per_page=5&sort=created:asc`,
+            method: 'GET',
+            data: {
+                client_id: config.get('githubClientId'),
+                client_secret: config.get('githubClientSecret')
+            }
+        }).then(response => {
+            if (response.status !== 200)
+                return res.status(404).json({ errors: [{ msg: "github profile not found" }] })
+
+            res.json(response.data)
+
+        })
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send("server error");
+    }
+})
+
+/* Oauth  process*/
+
+ router.get('/github/', (req, res) => {
 
     try {
-        // const redirectURI = 'http://localhost:5000/api/profile/user/signin/callback';
-        //https://github.com/login/oauth/authorize?client_id=a6d6cbf89be9a948e956&redirect_uri=http://localhost:5000/api/profile/user/signin/callback
+        //const redirectURI = 'http://localhost:5000/api/profile/user/signin/callback';
+       // https://github.com/login/oauth/authorize?client_id=a6d6cbf89be9a948e956&redirect_uri=http://localhost:5000/api/profile/user/signin/callback
         axios.get(`https://github.com/login/oauth/authorize?client_id=${config.get('githubClientId')}`)
             .then(response => {
                 if (!response)
                     return res.status(404).json({ errors: [{ msg: "Github profile not found" }] });
 
                 console.log(response.config.url);
-                /* console.log({code}); */
+                //console.log({code}); 
                 res.send("response found")
             }).catch(error => console.error(error))
 
@@ -284,7 +308,7 @@ router.get('/github/:username', (req, res) => {
         console.error(err.message);
         res.status(500).send("server error");
     }
-})
+}) 
 
 router.get('/user/signin/callback', (req, res) => {
     try {
