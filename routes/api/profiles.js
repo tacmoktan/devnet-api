@@ -265,7 +265,7 @@ router.delete('/education/:edu_id', auth, async (req, res) => {
 //@desc         get github repo by username  
 //@access       public
 
-router.get('/github/:username', auth,(req, res) => {
+router.get('/github/:username', (req, res) => {
     try {
         axios.request({
             baseURL: `https://api.github.com/users/${req.params.username}/repos?per_page=5&sort=created:asc`,
@@ -289,11 +289,11 @@ router.get('/github/:username', auth,(req, res) => {
 
 /* Oauth  process*/
 
- router.get('/github/', (req, res) => {
+router.get('/github/', (req, res) => {
 
     try {
         //const redirectURI = 'http://localhost:5000/api/profile/user/signin/callback';
-       // https://github.com/login/oauth/authorize?client_id=a6d6cbf89be9a948e956&redirect_uri=http://localhost:5000/api/profile/user/signin/callback
+        // https://github.com/login/oauth/authorize?client_id=a6d6cbf89be9a948e956&redirect_uri=http://localhost:5000/api/profile/user/signin/callback
         axios.get(`https://github.com/login/oauth/authorize?client_id=${config.get('githubClientId')}`)
             .then(response => {
                 if (!response)
@@ -308,7 +308,7 @@ router.get('/github/:username', auth,(req, res) => {
         console.error(err.message);
         res.status(500).send("server error");
     }
-}) 
+})
 
 router.get('/user/signin/callback', (req, res) => {
     try {
