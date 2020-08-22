@@ -127,7 +127,7 @@ router.put('/like/:id', auth, async (req, res) => {
         post.likes.unshift({ user: req.user.id })
 
         await post.save();
-        res.json(post);
+        res.json(post.likes);
 
     } catch (err) {
         console.error(err.message);
@@ -156,7 +156,7 @@ router.put('/unlike/:id', auth, async (req, res) => {
         post.likes.splice(removeIndex, 1);
 
         await post.save();
-        res.json(post)
+        res.json(post.likes)
 
     } catch (err) {
         console.error(err.message);
@@ -195,7 +195,7 @@ router.post('/comment/:id',
             post.comments.unshift(newComment)
 
             await post.save();
-            res.json(post);
+            res.json(post.comments);
 
 
         } catch (err) {
@@ -233,7 +233,7 @@ router.delete('/comment/:id/:comment_id',
 
             await post.save();
             console.log("comment deleted");
-            res.json(post);
+            res.json(post.comments);
 
         } catch (err) {
             console.error(err.message);

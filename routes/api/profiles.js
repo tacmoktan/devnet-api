@@ -270,9 +270,13 @@ router.get('/github/:username', (req, res) => {
         axios.request({
             baseURL: `https://api.github.com/users/${req.params.username}/repos?per_page=5&sort=created:asc`,
             method: 'GET',
-            data: {
+            /* data: {
                 client_id: config.get('githubClientId'),
                 client_secret: config.get('githubClientSecret')
+            }, */
+            headers: {
+                'user-agent': 'node-js',
+                Authorization: `token ${config.get('githubToken')}`
             }
         }).then(response => {
             if (response.status !== 200)
