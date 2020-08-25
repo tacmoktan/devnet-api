@@ -9,6 +9,12 @@ const profileSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'user'                 //collection
     },
+    bio: {
+        type: String
+    },
+    address: {
+        type: String
+    },
     company: {
         type: String
     },
