@@ -4,10 +4,12 @@ const { check, validationResult } = require('express-validator');
 const auth = require('../../middleware/auth');
 const config = require('config');
 const axios = require('axios');
+const normalizeUrl = require('normalize-url');
 //model
 const Post = require('../../models/Post');
 const Profile = require('../../models/Profile');
 const User = require('../../models/User');
+const c = require('config');
 
 //@route    GET api/profile/me
 //@desc     Get current user's profile
@@ -50,13 +52,15 @@ router.post('/',
         if (!errors.isEmpty())
             return res.status(400).json({ errors: errors.array() })
 
-        const { company, website, github, status, skills, facebook, linkedin, youtube } = req.body;
+        const { bio, address, company, website, github, status, skills, facebook, linkedin, youtube } = req.body;
 
         //build profileFields object
         let profileFields = {};
         profileFields.user = req.user.id;
+        if (company) profileFields.bio = bio;
+        if (company) profileFields.address = address;
         if (company) profileFields.company = company;
-        if (website) profileFields.website = website;
+        if (website) profileFields.website = normalizeUrl(website, { forceHttps: true });
         if (website) profileFields.github = github;
         if (status) profileFields.status = status;
 
@@ -67,9 +71,9 @@ router.post('/',
 
         //build profileFields socials
         profileFields.social = {}
-        if (facebook) profileFields.social.facebook = facebook;
-        if (linkedin) profileFields.social.linkedin = linkedin;
-        if (youtube) profileFields.social.youtube = youtube;
+        if (facebook) profileFields.social.facebook = normalizeUrl(facebook, { forceHttps: true });
+        if (linkedin) profileFields.social.linkedin = normalizeUrl(linkedin, { forceHttps: true });
+        if (youtube) profileFields.social.youtube = normalizeUrl(youtube, { forceHttps: true });
 
         try {
             let profile = await Profile.findOne({ user: req.user.id });
