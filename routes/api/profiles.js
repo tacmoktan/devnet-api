@@ -80,12 +80,13 @@ router.post('/',
 
             //update profile
             if (profile) {
-                profile = await Profile.findOneAndUpdate({ user: req.user.id }, { $set: profileFields }, { new: true });
+                profile = await Profile.findOneAndUpdate({ user: req.user.id }, { $set: profileFields }, { new: true })
+                    .populate('user', ['name', 'avatar']);
                 return res.json(profile);
             }
 
             //create profile
-            profile = new Profile(profileFields);
+            profile = new Profile(profileFields).populate('user', ['name', 'avatar']);
             await profile.save();
             res.json(profile);
 
